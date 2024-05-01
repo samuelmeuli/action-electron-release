@@ -39,7 +39,7 @@ GitHub Actions allows you to build your app on macOS, Windows and Linux without 
              node-version: 20
 
          - name: Build/release Electron app
-           uses: samuelmeuli/action-electron-builder@v1
+           uses: heliomarpm/action-electron-builder@v2.0.0
            with:
              # GitHub token, automatically provided to the action
              # (No need to define this secret in the repo settings)
