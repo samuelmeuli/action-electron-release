@@ -46,6 +46,10 @@ inputs:
     description: Maximum number of attempts for completing the build and release step
     required: false
     default: "1"
+  package_manager:
+    description: Package manager to use (`yarn | npm`)
+    required: false
+    default: "yarn"
 
   # Deprecated
   app_root:

@@ -1,8 +1,26 @@
 name: Lint
 
 on:
-  - pull_request
-  - push
+  # - pull_request
+  # - push
+  push:
+    paths-ignore:
+      - "/*.sh"
+      - "/.*"
+      - "/_*"
+      - "**.txt"
+      - "**.adoc"
+      - "**.md"
+      - ".github/workflows/*.yml"
+      - "!.github/workflows/lint.yml"
+  pull_request:
+    paths-ignore:
+      - "/*.sh"
+      - "/.*"
+      - "/_*"
+      - "**.txt"
+      - "**.adoc"
+      - "**.md"
 
 jobs:
   lint:
