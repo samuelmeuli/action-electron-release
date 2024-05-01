@@ -1,6 +1,6 @@
 {
 	"name": "action-electron-builder",
-	"version": "2,0",
+	"version": "2.0.0",
 	"description": "GitHub Action for building and releasing Electron apps",
 	"author": {
 		"name": "Heliomar P. Marques",
