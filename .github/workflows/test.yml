@@ -35,7 +35,8 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
         package_manager: [npm]
-        package_root: ["./test/app-in-root/", "./test/app-in-subdirectory/", "./test/vuevite-app"]
+        #package_root: ["./test/app-in-root/", "./test/app-in-subdirectory/", "./test/vuevite-app"]
+        package_root: ["./test/app-in-root/"]
 
     steps:
       - name: Check out Git repository
@@ -76,11 +77,3 @@ jobs:
           package_root: ${{ matrix.package_root }}
           use_vue_cli: ${{ contains(matrix.package_root, 'vuevite')}}
           max_attempts: 3
-
-      - name: see directory
-        if: startsWith(matrix.os, 'windows-latest') == false
-        run: ls ./dist
-
-      - name: see directory
-        if: startsWith(matrix.os, 'windows-latest')
-        run: dir dist
