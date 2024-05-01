@@ -1,13 +1,13 @@
 {
 	"name": "action-electron-builder",
-	"version": "1.6.1",
+	"version": "2,0",
 	"description": "GitHub Action for building and releasing Electron apps",
 	"author": {
-		"name": "Samuel Meuli",
-		"email": "me@samuelmeuli.com",
-		"url": "https://samuelmeuli.com"
+		"name": "Heliomar P. Marques",
+		"email": "heliomarpm@gmail.com",
+		"url": "https://navto.me/heliomarpm"
 	},
-	"repository": "github:samuelmeuli/action-electron-builder",
+	"repository": "github:heliomarpm/action-electron-builder",
 	"license": "MIT",
 	"private": true,
 	"main": "./index.js",

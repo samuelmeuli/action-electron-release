@@ -1,5 +1,5 @@
 name: Electron Builder Action
-author: Samuel Meuli
+author: Heliomar Marques
 description: GitHub Action for building and releasing Electron apps
 
 inputs:
@@ -53,7 +53,7 @@ inputs:
     required: false
 
 runs:
-  using: node16
+  using: node20
   main: index.js
 
 branding:

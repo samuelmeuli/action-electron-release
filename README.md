@@ -24,19 +24,19 @@ GitHub Actions allows you to build your app on macOS, Windows and Linux without 
        runs-on: ${{ matrix.os }}
        permissions:
          contents: write
-         
+
        strategy:
          matrix:
            os: [macos-latest, ubuntu-latest, windows-latest]
 
        steps:
          - name: Check out Git repository
-           uses: actions/checkout@v3
+           uses: actions/checkout@v4
 
          - name: Install Node.js, NPM and Yarn
-           uses: actions/setup-node@v3
+           uses: actions/setup-node@v4
            with:
-             node-version: 16
+             node-version: 20
 
          - name: Build/release Electron app
            uses: samuelmeuli/action-electron-builder@v1
@@ -157,7 +157,12 @@ If you've configured `electron-builder` to notarize your Electron Mac app [as de
 
 ## Example
 
-For an example of the action used in production (including app notarization and publishing to Snapcraft), see [Mini Diary](https://github.com/samuelmeuli/mini-diary).
+For an example of the action used in production (including app notarization and publishing to Snapcraft), see:
+
+- [Mini Diary](https://github.com/samuelmeuli/mini-diary)
+- [Udeler](https://github.com/heliomarpm/udemy-downloader-gui)
+- [Electron Quick Start Vanilla](https://github.com/heliomarpm/electron-quick-start)
+- [Electron Quick Start Vue 3 with Vite](https://github.com/heliomarpm/electron-vuevite-quick-start).
 
 ## Development
 
@@ -168,3 +173,7 @@ Suggestions and contributions are always welcome! Please discuss larger changes 
 - [Snapcraft Action](https://github.com/samuelmeuli/action-snapcraft) – GitHub Action for setting up Snapcraft
 - [Lint Action](https://github.com/samuelmeuli/lint-action) – GitHub Action for detecting and fixing linting errors
 - [Maven Publish Action](https://github.com/samuelmeuli/action-maven-publish) – GitHub Action for automatically publishing Maven packages
+
+## Credit
+
+Credit to [Samuel Meuli](@samuelmeuli) for starting this [project](https://github.com/samuelmeuli/action-electron-builder)
