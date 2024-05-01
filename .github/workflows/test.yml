@@ -5,8 +5,7 @@ on:
     # - push
     # - pull_request
 
-    # every day at 10:00 UTC
-    - cron: "35 16 * * 2"
+    # - cron: "35 16 * * 2"
 
   push:
     paths-ignore:
@@ -37,7 +36,7 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
         package_manager: [npm]
-        package_root: ["./test/app-in-root/", "./test/app-in-subdirectory/", "./test/vue-app"]
+        package_root: ["./test/app-in-root/", "./test/app-in-subdirectory/", "./test/vuevite-app"]
 
     steps:
       - name: Check out Git repository
@@ -74,5 +73,5 @@ jobs:
           package_manager: ${{ matrix.package_manager }}
           github_token: ${{ secrets.github_token }}
           package_root: ${{ matrix.package_root }}
-          use_vue_cli: ${{ contains(matrix.package_root, 'vue')}}
+          use_vue_cli: ${{ contains(matrix.package_root, 'vuevite')}}
           max_attempts: "2"
