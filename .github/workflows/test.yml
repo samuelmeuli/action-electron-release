@@ -40,31 +40,33 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Cache node_modules
+        uses: actions/cache@v3
         with:
-          node-version: 20
+          path: node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json')}}
 
       - name: Install test app dependencies
         run: |
           cd ${{ matrix.package_root }}
           ${{ matrix.package_manager }} install
 
-      - name: Make sure PYTHON_ENV is set for npm in macos
-        if: ${{ startsWith(matrix.os, 'macos-') && matrix.package_manager == 'npm' }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+      - name: apt-update
+        if: startsWith(matrix.os, 'ubuntu-latest')
+        run: sudo apt-get update
 
-      - name: Make more sure PYTHON_ENV is set for npm in macos
-        if: ${{ startsWith(matrix.os, 'macos-') && matrix.package_manager == 'npm' }}
-        run: |
-          command -v python || :
-          command -v python3 || :
-          echo "PYTHON_ENV=$(command -v python)" >> $GITHUB_OUTPUT
+      - name: autoremove
+        if: startsWith(matrix.os, 'ubuntu-latest')
+        run: sudo apt autoremove
+
+      - name: Install libarchive rpm on Linux
+        if: startsWith(matrix.os, 'ubuntu-latest')
+        run: sudo apt-get install libarchive-tools rpm
+
+      - name: Install dmg-license fo MacOS
+        if: startsWith(matrix.os, 'macos-latest')
+        run: ${{ matrix.package_manager }} install dmg-license
 
       - name: Run action
         uses: ./
@@ -73,4 +75,12 @@ jobs:
           github_token: ${{ secrets.github_token }}
           package_root: ${{ matrix.package_root }}
           use_vue_cli: ${{ contains(matrix.package_root, 'vuevite')}}
-          max_attempts: "2"
+          max_attempts: 3
+
+      - name: see directory
+        if: startsWith(matrix.os, 'windows-latest') == false
+        run: ls ./dist
+
+      - name: see directory
+        if: startsWith(matrix.os, 'windows-latest')
+        run: dir dist
