@@ -172,10 +172,10 @@ If you've configured `electron-builder` to notarize your Electron Mac app [as de
 
 For an example of the action used in production (including app notarization and publishing to Snapcraft), see:
 
-- [Mini Diary](https://github.com/samuelmeuli/mini-diary)
 - [Udeler](https://github.com/heliomarpm/udemy-downloader-gui)
 - [Electron Quick Start Vanilla](https://github.com/heliomarpm/electron-quick-start)
 - [Electron Quick Start Vue 3 with Vite](https://github.com/heliomarpm/electron-vuevite-quick-start).
+- [Mini Diary](https://github.com/samuelmeuli/mini-diary)
 
 ## Development
 

@@ -1,6 +1,6 @@
 {
 	"name": "action-electron-builder",
-	"version": "2.0.0",
+	"version": "2.1",
 	"description": "GitHub Action for building and releasing Electron apps",
 	"author": {
 		"name": "Heliomar P. Marques",
@@ -15,18 +15,19 @@
 		"lint": "eslint --max-warnings 0 \"**/*.js\"",
 		"lint:fix": "yarn lint --fix",
 		"format": "prettier --ignore-path ./.gitignore --list-different \"**/*.{css,html,js,json,jsx,less,md,scss,ts,tsx,vue,yaml,yml}\"",
-		"format:fix": "yarn format --write"
+		"format:fix": "yarn format --write",
+		"commit:version": "node ./cmd/modules/release/index.js"
 	},
-	"dependencies": {},
-	"peerDependencies": {},
 	"devDependencies": {
 		"@samuelmeuli/eslint-config": "^6.0.0",
 		"@samuelmeuli/prettier-config": "^2.0.1",
-		"eslint": "8.28.0",
+		"eslint": "9.2.0",
 		"eslint-config-airbnb-base": "15.0.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-import": "^2.26.0",
-		"prettier": "^2.7.1"
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-import": "^2.29.1",
+		"open": "^10.1.0",
+		"prettier": "^3.2.5",
+		"semver": "^7.6.0"
 	},
 	"eslintConfig": {
 		"root": true,
