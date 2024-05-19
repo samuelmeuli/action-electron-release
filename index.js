@@ -60,6 +60,43 @@ const getInput = (name, required) => {
 	return value;
 };
 
+const getPackageManager = (pkgRoot, appRoot, pkgJsonPath, buildScriptName) => {
+	const pnpmLockPath = join(pkgRoot, "pnpm-lock.yaml");
+	if (existsSync(pnpmLockPath)) {
+		return {
+			build: () => run(`pnpm run ${buildScriptName}`, pkgRoot),
+			compile: (command) => run(`pnpm exec ${command}`, appRoot),
+			install: () => run("pnpm install", pkgRoot),
+			name: "PNPM",
+		};
+	}
+
+	const pkgLockPath = join(pkgRoot, "package-lock.json");
+	if (existsSync(pkgLockPath)) {
+		return {
+			build: () => run(`npm run ${buildScriptName} --if-present`, pkgRoot),
+			compile: (command) => run(`npx --no-install run ${command}`, appRoot),
+			install: () => run("npm install", pkgRoot),
+			name: "NPM",
+		};
+	}
+
+	return {
+		build: () => {
+			// TODO: Use `yarn run ${buildScriptName} --if-present` once supported
+			// https://github.com/yarnpkg/yarn/issues/6894
+			const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
+
+			if (pkgJson.scripts && pkgJson.scripts[buildScriptName]) {
+				run(`yarn run ${buildScriptName}`, pkgRoot);
+			}
+		},
+		compile: (command) => run(`yarn run ${command}`, appRoot),
+		install: () => run("yarn", pkgRoot),
+		name: "Yarn",
+	};
+};
+
 /**
  * Installs NPM dependencies and builds/releases the Electron app
  */
@@ -78,16 +115,16 @@ const runAction = () => {
 	const appRoot = getInput("app_root") || pkgRoot;
 
 	const pkgJsonPath = join(pkgRoot, "package.json");
-	const pkgLockPath = join(pkgRoot, "package-lock.json");
-
-	// Determine whether NPM should be used to run commands (instead of Yarn, which is the default)
-	const useNpm = existsSync(pkgLockPath);
-	log(`Will run ${useNpm ? "NPM" : "Yarn"} commands in directory "${pkgRoot}"`);
 
 	// Make sure `package.json` file exists
 	if (!existsSync(pkgJsonPath)) {
 		exit(`\`package.json\` file not found at path "${pkgJsonPath}"`);
 	}
+
+	const packageManager = getPackageManager(pkgRoot, appRoot, pkgJsonPath, buildScriptName);
+
+	// Determine whether NPM should be used to run commands (instead of Yarn, which is the default)
+	log(`Will run ${packageManager.name} commands in directory "${pkgRoot}"`);
 
 	// Copy "github_token" input variable to "GH_TOKEN" env variable (required by `electron-builder`)
 	setEnv("GH_TOKEN", getInput("github_token", true));
@@ -105,36 +142,22 @@ const runAction = () => {
 	// Disable console advertisements during install phase
 	setEnv("ADBLOCK", true);
 
-	log(`Installing dependencies using ${useNpm ? "NPM" : "Yarn"}…`);
-	run(useNpm ? "npm install" : "yarn", pkgRoot);
+	log(`Installing dependencies using ${packageManager.name}…`);
+	packageManager.install();
 
 	// Run NPM build script if it exists
 	if (skipBuild) {
 		log("Skipping build script because `skip_build` option is set");
 	} else {
 		log("Running the build script…");
-		if (useNpm) {
-			run(`npm run ${buildScriptName} --if-present`, pkgRoot);
-		} else {
-			// TODO: Use `yarn run ${buildScriptName} --if-present` once supported
-			// https://github.com/yarnpkg/yarn/issues/6894
-			const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
-			if (pkgJson.scripts && pkgJson.scripts[buildScriptName]) {
-				run(`yarn run ${buildScriptName}`, pkgRoot);
-			}
-		}
+		packageManager.build();
 	}
 
 	log(`Building${release ? " and releasing" : ""} the Electron app…`);
 	const cmd = useVueCli ? "vue-cli-service electron:build" : "electron-builder";
 	for (let i = 0; i < maxAttempts; i += 1) {
 		try {
-			run(
-				`${useNpm ? "npx --no-install" : "yarn run"} ${cmd} --${platform} ${
-					release ? "--publish always" : ""
-				} ${args}`,
-				appRoot,
-			);
+			packageManager.compile(`${cmd} --${platform} ${release ? "--publish always" : ""} ${args}`);
 			break;
 		} catch (err) {
 			if (i < maxAttempts - 1) {
